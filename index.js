@@ -8,16 +8,42 @@ app.get('/', (req, res) => {
   res.send('Hello Welcome to our app ');
 });
 
-const users = [{ id: 1, name: 'John' }];
+const users = [];
 
-app.get('/users', (req, res) => {
-  res.json(users);
+app.post('/signup', (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    console.log('Signup attempt with missing credentials');
+    return res
+      .status(400)
+      .json({ message: 'Username and password are required' });
+  }
+
+  const existing = users.find((u) => u.username === username);
+  if (existing) {
+    console.log(`Signup failed: user ${username} already exists`);
+    return res.status(409).json({ message: 'User already exists' });
+  }
+
+  const newUser = { id: Date.now(), username, password };
+  users.push(newUser);
+  console.log(`User signed up: ${username}`);
+  res.status(201).json({ message: 'Signup successful' });
 });
 
-app.post('/users', (req, res) => {
-  const newUser = { id: Date.now(), ...req.body };
-  users.push(newUser);
-  res.status(201).json(newUser);
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(
+    (u) => u.username === username && u.password === password
+  );
+
+  if (user) {
+    console.log(`User logged in: ${username}`);
+    return res.json({ message: 'Login successful' });
+  }
+
+  console.log(`Failed login attempt: ${username}`);
+  res.status(401).json({ message: 'Invalid credentials' });
 });
 
 app.listen(PORT, () => {
