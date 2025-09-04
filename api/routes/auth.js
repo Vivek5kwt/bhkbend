@@ -2,10 +2,8 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 
-// POST /api/:role/signup
-router.post('/:role/signup', authController.signup);
-
-// POST /api/:role/login
-router.post('/:role/login', authController.login);
+router.post('/signup/:role', authController.signup);
+router.post('/login/:role', authController.login);
+router.post('/social-login/:role', authController.socialLogin);
 
 module.exports = router;
