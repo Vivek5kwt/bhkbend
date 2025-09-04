@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const customerSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  // Password is optional to support social login accounts
+  password: { type: String }
 });
 
 module.exports = mongoose.model('Customer', customerSchema);
